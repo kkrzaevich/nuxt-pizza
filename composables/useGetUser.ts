@@ -92,4 +92,9 @@ export const useGetUser = () => {
       loading.value = false;
     }
   };
+
+  return {
+    getUser,
+    loading,
+  };
 };

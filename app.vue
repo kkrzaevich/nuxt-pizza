@@ -3,22 +3,19 @@ import { onBeforeMount } from "vue";
 import AppPageContent from "./components/AppPageContent.vue";
 import { onMounted } from "vue";
 
-const { getUser } = useUsers();
+const { getUser } = useGetUser();
 const { fetchItems } = useItems();
 
-onBeforeMount(async () => {
-  await getUser();
-});
-
 onMounted(async () => {
+  await getUser();
   await fetchItems();
 });
 </script>
 
 <template>
-  <div>
-    <AppPageContent />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style scoped lang="scss">
