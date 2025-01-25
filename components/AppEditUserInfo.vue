@@ -221,192 +221,205 @@ function cancelPayMethodEdit() {
 </script>
 
 <template>
-  <div class="personal-data">
-    <!-- Name Form -->
-    <form
-      class="personal-details"
-      @submit.prevent="onNameSubmit"
-      :class="{
-        'success-flash': nameStatus === 'success',
-        'error-flash': nameStatus === 'error',
-      }"
-    >
-      <div class="field-header">
-        <h2>Имя</h2>
-        <div class="edit-controls">
-          <PencilIcon
-            v-if="!nameEdit"
-            class="edit-icon"
-            @click="nameEdit = true"
+  <Suspense>
+    <template #default>
+      <div class="personal-data">
+        <!-- Name Form -->
+        <form
+          class="personal-details"
+          @submit.prevent="onNameSubmit"
+          :class="{
+            'success-flash': nameStatus === 'success',
+            'error-flash': nameStatus === 'error',
+          }"
+        >
+          <div class="field-header">
+            <h2>Имя</h2>
+            <div class="edit-controls">
+              <PencilIcon
+                v-if="!nameEdit"
+                class="edit-icon"
+                @click="nameEdit = true"
+              />
+              <template v-else>
+                <CheckIcon
+                  class="edit-icon submit-icon"
+                  @click="nameErrors.name ? null : onNameSubmit()"
+                />
+                <XMarkIcon
+                  class="edit-icon cancel-icon"
+                  @click="cancelNameEdit()"
+                />
+              </template>
+            </div>
+          </div>
+          <input
+            v-if="nameEdit"
+            type="text"
+            placeholder="Алихан"
+            name="name"
+            v-model="name"
+            v-bind="nameAttrs"
           />
-          <template v-else>
-            <CheckIcon
-              class="edit-icon submit-icon"
-              @click="nameErrors.name ? null : onNameSubmit()"
-            />
-            <XMarkIcon
-              class="edit-icon cancel-icon"
-              @click="cancelNameEdit()"
-            />
-          </template>
-        </div>
-      </div>
-      <input
-        v-if="nameEdit"
-        type="text"
-        placeholder="Алихан"
-        name="name"
-        v-model="name"
-        v-bind="nameAttrs"
-      />
-      <p v-else class="value-text">{{ currentData?.name || "Не указано" }}</p>
-      <p
-        v-if="nameErrors.name || nameStatusMessage"
-        class="status-text"
-        :class="nameErrors.name ? 'error' : nameStatusClass"
-      >
-        {{ nameErrors.name || nameStatusMessage }}
-      </p>
-    </form>
+          <p v-else class="value-text">
+            {{ currentData?.name || "Не указано" }}
+          </p>
+          <p
+            v-if="nameErrors.name || nameStatusMessage"
+            class="status-text"
+            :class="nameErrors.name ? 'error' : nameStatusClass"
+          >
+            {{ nameErrors.name || nameStatusMessage }}
+          </p>
+        </form>
 
-    <!-- Phone Form -->
-    <form
-      class="personal-details"
-      @submit.prevent="onPhoneSubmit"
-      :class="{
-        'success-flash': phoneStatus === 'success',
-        'error-flash': phoneStatus === 'error',
-      }"
-    >
-      <div class="field-header">
-        <h2>Номер телефона</h2>
-        <div class="edit-controls">
-          <PencilIcon
-            v-if="!phoneEdit"
-            class="edit-icon"
-            @click="phoneEdit = true"
+        <!-- Phone Form -->
+        <form
+          class="personal-details"
+          @submit.prevent="onPhoneSubmit"
+          :class="{
+            'success-flash': phoneStatus === 'success',
+            'error-flash': phoneStatus === 'error',
+          }"
+        >
+          <div class="field-header">
+            <h2>Номер телефона</h2>
+            <div class="edit-controls">
+              <PencilIcon
+                v-if="!phoneEdit"
+                class="edit-icon"
+                @click="phoneEdit = true"
+              />
+              <template v-else>
+                <CheckIcon
+                  class="edit-icon submit-icon"
+                  @click="phoneErrors.phone ? null : onPhoneSubmit()"
+                />
+                <XMarkIcon
+                  class="edit-icon cancel-icon"
+                  @click="cancelPhoneEdit()"
+                />
+              </template>
+            </div>
+          </div>
+          <input
+            type="text"
+            placeholder="+7 (999) 999 99 99"
+            name="phone"
+            v-maska="'+7 (###) ### ## ##'"
+            v-model="phone"
+            v-bind="phoneAttrs"
+            :disabled="!phoneEdit"
           />
-          <template v-else>
-            <CheckIcon
-              class="edit-icon submit-icon"
-              @click="phoneErrors.phone ? null : onPhoneSubmit()"
-            />
-            <XMarkIcon
-              class="edit-icon cancel-icon"
-              @click="cancelPhoneEdit()"
-            />
-          </template>
-        </div>
-      </div>
-      <input
-        type="text"
-        placeholder="+7 (999) 999 99 99"
-        name="phone"
-        v-maska="'+7 (###) ### ## ##'"
-        v-model="phone"
-        v-bind="phoneAttrs"
-        :disabled="!phoneEdit"
-      />
-      <p
-        v-if="phoneErrors.phone || phoneStatusMessage"
-        class="status-text"
-        :class="phoneErrors.phone ? 'error' : phoneStatusClass"
-      >
-        {{ phoneErrors.phone || phoneStatusMessage }}
-      </p>
-    </form>
+          <p
+            v-if="phoneErrors.phone || phoneStatusMessage"
+            class="status-text"
+            :class="phoneErrors.phone ? 'error' : phoneStatusClass"
+          >
+            {{ phoneErrors.phone || phoneStatusMessage }}
+          </p>
+        </form>
 
-    <!-- PayMethod Form -->
-    <form
-      class="personal-details"
-      @submit.prevent="onPayMethodSubmit"
-      :class="{
-        'success-flash': payMethodStatus === 'success',
-        'error-flash': payMethodStatus === 'error',
-      }"
-    >
-      <div class="field-header">
-        <h2>Способ оплаты</h2>
-        <div class="edit-controls">
-          <PencilIcon
-            v-if="!payMethodEdit"
-            class="edit-icon"
-            @click="payMethodEdit = true"
-          />
-          <template v-else>
-            <CheckIcon
-              class="edit-icon submit-icon"
-              @click="payMethodErrors.payMethod ? null : onPayMethodSubmit()"
-            />
-            <XMarkIcon
-              class="edit-icon cancel-icon"
-              @click="cancelPayMethodEdit()"
-            />
-          </template>
-        </div>
+        <!-- PayMethod Form -->
+        <form
+          class="personal-details"
+          @submit.prevent="onPayMethodSubmit"
+          :class="{
+            'success-flash': payMethodStatus === 'success',
+            'error-flash': payMethodStatus === 'error',
+          }"
+        >
+          <div class="field-header">
+            <h2>Способ оплаты</h2>
+            <div class="edit-controls">
+              <PencilIcon
+                v-if="!payMethodEdit"
+                class="edit-icon"
+                @click="payMethodEdit = true"
+              />
+              <template v-else>
+                <CheckIcon
+                  class="edit-icon submit-icon"
+                  @click="
+                    payMethodErrors.payMethod ? null : onPayMethodSubmit()
+                  "
+                />
+                <XMarkIcon
+                  class="edit-icon cancel-icon"
+                  @click="cancelPayMethodEdit()"
+                />
+              </template>
+            </div>
+          </div>
+          <Transition name="pay-methods" mode="out-in">
+            <div class="pay-methods" v-if="payMethodEdit">
+              <div class="pay-radio">
+                <input
+                  type="radio"
+                  id="card-online"
+                  value="card-online"
+                  v-model="payMethod"
+                  v-bind="payMethodAttrs"
+                  :disabled="!payMethodEdit"
+                  class="pay-button"
+                />
+                <label for="card-online" class="pay-label">Картой онлайн</label>
+              </div>
+              <div class="pay-radio">
+                <input
+                  type="radio"
+                  id="card-on-delivery"
+                  value="card-on-delivery"
+                  v-model="payMethod"
+                  v-bind="payMethodAttrs"
+                  :disabled="!payMethodEdit"
+                  class="pay-button"
+                />
+                <label for="card-on-delivery" class="pay-label"
+                  >Картой при получении</label
+                >
+              </div>
+              <div class="pay-radio">
+                <input
+                  type="radio"
+                  id="cash"
+                  value="cash"
+                  v-model="payMethod"
+                  v-bind="payMethodAttrs"
+                  :disabled="!payMethodEdit"
+                  class="pay-button"
+                />
+                <label for="cash" class="pay-label"
+                  >Наличными при получении</label
+                >
+              </div>
+            </div>
+            <p v-else class="value-text">
+              {{
+                payMethod === "card-online"
+                  ? "Картой онлайн"
+                  : payMethod === "card-on-delivery"
+                  ? "Картой при получении"
+                  : payMethod === "cash"
+                  ? "Наличными при получении"
+                  : "Не указано"
+              }}
+            </p>
+          </Transition>
+          <p
+            v-if="payMethodErrors.payMethod || payMethodStatusMessage"
+            class="status-text"
+            :class="payMethodErrors.payMethod ? 'error' : payMethodStatusClass"
+          >
+            {{ payMethodErrors.payMethod || payMethodStatusMessage }}
+          </p>
+        </form>
       </div>
-      <Transition name="pay-methods" mode="out-in">
-        <div class="pay-methods" v-if="payMethodEdit">
-          <div class="pay-radio">
-            <input
-              type="radio"
-              id="card-online"
-              value="card-online"
-              v-model="payMethod"
-              v-bind="payMethodAttrs"
-              :disabled="!payMethodEdit"
-              class="pay-button"
-            />
-            <label for="card-online" class="pay-label">Картой онлайн</label>
-          </div>
-          <div class="pay-radio">
-            <input
-              type="radio"
-              id="card-on-delivery"
-              value="card-on-delivery"
-              v-model="payMethod"
-              v-bind="payMethodAttrs"
-              :disabled="!payMethodEdit"
-              class="pay-button"
-            />
-            <label for="card-on-delivery" class="pay-label"
-              >Картой при получении</label
-            >
-          </div>
-          <div class="pay-radio">
-            <input
-              type="radio"
-              id="cash"
-              value="cash"
-              v-model="payMethod"
-              v-bind="payMethodAttrs"
-              :disabled="!payMethodEdit"
-              class="pay-button"
-            />
-            <label for="cash" class="pay-label">Наличными при получении</label>
-          </div>
-        </div>
-        <p v-else class="value-text">
-          {{
-            payMethod === "card-online"
-              ? "Картой онлайн"
-              : payMethod === "card-on-delivery"
-              ? "Картой при получении"
-              : payMethod === "cash"
-              ? "Наличными при получении"
-              : "Не указано"
-          }}
-        </p>
-      </Transition>
-      <p
-        v-if="payMethodErrors.payMethod || payMethodStatusMessage"
-        class="status-text"
-        :class="payMethodErrors.payMethod ? 'error' : payMethodStatusClass"
-      >
-        {{ payMethodErrors.payMethod || payMethodStatusMessage }}
-      </p>
-    </form>
-  </div>
+    </template>
+    <template #fallback>
+      <div></div>
+    </template>
+  </Suspense>
 </template>
 
 <style scoped lang="scss">

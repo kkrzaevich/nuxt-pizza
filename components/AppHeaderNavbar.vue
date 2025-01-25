@@ -39,9 +39,6 @@ const pages = computed(() => {
     <AppHeaderCartLink />
   </section>
   <section class="" v-else>
-    <!-- <div v-if="hamburgerClicked" class="overlay-container" 
-          in:fly={{ x: 200, duration: 500 }} out:fly={{ x: 200, duration: 500 }}
-          > -->
     <Transition name="fly">
       <div v-if="hamburgerClicked" class="overlay-container">
         <div class="overlay-menu">
@@ -66,7 +63,6 @@ const pages = computed(() => {
           </div>
         </div>
       </div>
-      <!-- <button v-else class="hamburger" in:fly={{ x: 200, duration: 500 }} out:fly={{ x: 200, duration: 500 }} @click="() => {hamburgerClicked = true}"><img :src="src2" :alt="alt2"></button> -->
       <button
         v-else
         class="hamburger"

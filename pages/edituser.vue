@@ -1,6 +1,17 @@
 <script setup lang="ts">
 const { handleLogout } = useHandleLogout();
 
+// Lazy load components
+const AppEditUserInfo = defineAsyncComponent(
+  () => import("@/components/AppEditUserInfo.vue")
+);
+const AppEditUserEmail = defineAsyncComponent(
+  () => import("@/components/AppEditUserEmail.vue")
+);
+const AppEditUserAddresses = defineAsyncComponent(
+  () => import("@/components/AppEditUserAddresses.vue")
+);
+
 const logout = async () => {
   const success = await handleLogout();
   if (success) {
@@ -17,18 +28,27 @@ const logout = async () => {
         <h2>Выйти из аккаунта</h2>
       </button>
     </div>
-    <div class="main-content">
-      <div class="main-data">
-        <AppEditUserInfo />
-        <AppEditUserEmail />
-        <AppEditUserAddresses />
-      </div>
-      <div class="router-link">
-        <router-link class="link-button" to="/orderlist"
-          ><h1>Мои заказы</h1></router-link
-        >
-      </div>
-    </div>
+    <Suspense>
+      <template #default>
+        <div class="main-content">
+          <div class="main-data">
+            <AppEditUserInfo />
+            <AppEditUserEmail />
+            <AppEditUserAddresses />
+          </div>
+          <div class="router-link">
+            <router-link class="link-button" to="/orderlist"
+              ><h1>Мои заказы</h1></router-link
+            >
+          </div>
+        </div>
+      </template>
+      <template #fallback>
+        <div class="skeleton-loader">
+          <!-- Skeleton UI -->
+        </div>
+      </template>
+    </Suspense>
   </section>
 </template>
 

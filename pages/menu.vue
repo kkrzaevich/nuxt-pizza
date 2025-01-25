@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="menu">
     <AppMenuChoose />
     <AppMenuMenu />
   </div>
@@ -8,7 +8,7 @@
 <style scoped lang="scss">
 @use "../assets/styles" as *;
 
-div {
+.menu {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -20,7 +20,7 @@ div {
 }
 
 @media screen and (max-width: $break-mobile) {
-  div {
+  .menu {
     gap: 45px;
   }
 }

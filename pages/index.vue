@@ -1,5 +1,7 @@
+<script setup>
+await navigateTo("/menu");
+</script>
+
 <template>
-  <div>
-    <AppPageContent />
-  </div>
+  <div></div>
 </template>

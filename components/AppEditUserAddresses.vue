@@ -11,10 +11,15 @@ import {
   PlusIcon,
 } from "@heroicons/vue/24/solid";
 import type { StatusClass } from "@/types/types";
+import { useEditAddresses } from "@/composables/useEditAddresses";
+
+const { user } = useUsers();
+const { addUserAddress, editUserAddress, deleteUserAddress, setMainAddress } =
+  useEditAddresses();
 
 const showAddAddress = ref(false);
 const newAddress = ref("");
-const addresses = ref(store.state.users.user.addresses || []);
+const addresses = ref(user.value?.addresses || []);
 const editingIndex = ref<number | null>(null);
 const editedAddress = ref("");
 const addressStatuses = ref<{
@@ -53,7 +58,7 @@ const { errors: newAddressErrors, validateField: validateNewAddress } = useForm(
 
 // For editing addresses - separate validation for each address
 const addressErrors = ref<{ [key: string]: { address?: string } }>({});
-const validateAddress = (addressId: string, value: string) => {
+const validateAddress = (addressId: number, value: string) => {
   try {
     addressSchema.validateSync({ address: value });
     addressErrors.value[addressId] = {};
@@ -66,7 +71,7 @@ const validateAddress = (addressId: string, value: string) => {
   }
 };
 
-async function addAddress(place: string) {
+async function addAddress(place: any) {
   try {
     const isValid = await validateNewAddress("address", place);
     if (!isValid) return;
@@ -74,10 +79,10 @@ async function addAddress(place: string) {
     newAddressStatusClass.value = "pending";
     newAddressStatusMessage.value = "Обновление...";
     addressStatuses.value["new"] = "pending";
-    const success = await store.dispatch("addUserAddress", place);
+    const success = await addUserAddress(place);
 
     if (success) {
-      const newAddresses = store.state.users.user.addresses;
+      const newAddresses = user.value?.addresses ?? [];
       const newAddressId = newAddresses[newAddresses.length - 1].id;
       addressStatuses.value[newAddressId] = "success";
       newAddressStatusClass.value = "success";
@@ -117,7 +122,8 @@ async function saveEditedAddress(index: number) {
 
     addressStatusClasses.value[addressToEdit.id] = "pending";
     addressStatusMessages.value[addressToEdit.id] = "Обновление...";
-    const success = await store.dispatch("editUserAddress", {
+    addressStatuses.value[addressToEdit.id] = "success";
+    const success = await editUserAddress({
       addressId: addressToEdit.id,
       newPlace: editedAddress.value,
     });
@@ -134,7 +140,7 @@ async function saveEditedAddress(index: number) {
       setTimeout(() => {
         addressStatuses.value[addressToEdit.id] = null;
       }, 300);
-      addresses.value = store.state.users.user.addresses;
+      addresses.value = user.value?.addresses ?? [];
       editingIndex.value = null;
       editedAddress.value = "";
     }
@@ -153,13 +159,10 @@ async function deleteAddress(index: number) {
   const addressToDelete = addresses.value[index];
   try {
     addressStatuses.value[addressToDelete.id] = "pending";
-    const success = await store.dispatch(
-      "deleteUserAddress",
-      addressToDelete.id
-    );
+    const success = await deleteUserAddress(addressToDelete.id);
 
     if (success) {
-      addresses.value = store.state.users.user.addresses;
+      addresses.value = user.value?.addresses ?? [];
     }
   } catch (err) {
     addressStatuses.value[addressToDelete.id] = "error";
@@ -169,11 +172,11 @@ async function deleteAddress(index: number) {
   }
 }
 
-async function makeMainAddress(addressId: string) {
+async function makeMainAddress(addressId: number) {
   try {
     addressStatuses.value[addressId] = "pending";
-    await store.dispatch("setMainAddress", addressId);
-    addresses.value = store.state.users.user.addresses;
+    await setMainAddress(addressId);
+    addresses.value = user.value?.addresses ?? [];
     addressStatuses.value[addressId] = "success";
     setTimeout(() => {
       addressStatuses.value[addressId] = null;
@@ -207,140 +210,150 @@ function cancelAddAddress() {
         @click="showAddAddress = true"
       />
     </div>
-
-    <div class="addresses-list">
-      <!-- Existing Addresses -->
-      <TransitionGroup name="list">
-        <div
-          v-for="(address, index) in addresses"
-          :key="address.id"
-          class="personal-details"
-        >
-          <div
-            class="personal-details-container"
-            :class="{
-              'success-flash': addressStatuses[address.id] === 'success',
-              'error-flash': addressStatuses[address.id] === 'error',
-              pending: addressStatuses[address.id] === 'pending',
-            }"
-          >
-            <div class="field-header">
-              <h3>Адрес {{ index + 1 }}</h3>
-              <div class="edit-controls">
+    <Suspense>
+      <template #default>
+        <div class="addresses-list">
+          <!-- Existing Addresses -->
+          <TransitionGroup name="list">
+            <div
+              v-for="(address, index) in addresses"
+              :key="address.id"
+              class="personal-details"
+            >
+              <div
+                class="personal-details-container"
+                :class="{
+                  'success-flash': addressStatuses[address.id] === 'success',
+                  'error-flash': addressStatuses[address.id] === 'error',
+                  pending: addressStatuses[address.id] === 'pending',
+                }"
+              >
+                <div class="field-header">
+                  <h3>Адрес {{ index + 1 }}</h3>
+                  <div class="edit-controls">
+                    <template v-if="editingIndex === index">
+                      <CheckIcon
+                        class="edit-icon submit-icon"
+                        @click="saveEditedAddress(index)"
+                      />
+                      <XMarkIcon
+                        class="edit-icon cancel-icon"
+                        @click="cancelEdit"
+                      />
+                    </template>
+                    <template v-else>
+                      <div class="address-controls">
+                        <Transition name="fade" mode="out-in">
+                          <p
+                            v-if="address.main"
+                            class="main-address"
+                            :key="'main'"
+                          >
+                            Основной
+                          </p>
+                          <button
+                            v-else
+                            class="make-main-btn"
+                            @click="makeMainAddress(address.id)"
+                            :key="'button'"
+                          >
+                            Сделать основным
+                          </button>
+                        </Transition>
+                        <PencilIcon
+                          class="edit-icon"
+                          @click="startEditAddress(index)"
+                        />
+                        <TrashIcon
+                          v-if="addresses.length > 1"
+                          class="edit-icon delete-icon"
+                          @click="deleteAddress(index)"
+                        />
+                      </div>
+                    </template>
+                  </div>
+                </div>
                 <template v-if="editingIndex === index">
-                  <CheckIcon
-                    class="edit-icon submit-icon"
-                    @click="saveEditedAddress(index)"
-                  />
-                  <XMarkIcon
-                    class="edit-icon cancel-icon"
-                    @click="cancelEdit"
+                  <input
+                    type="text"
+                    placeholder="г. Экибазтуз, ул. Введения Адреса, д. 1, кв. 15"
+                    v-model="editedAddress"
                   />
                 </template>
-                <template v-else>
-                  <div class="address-controls">
-                    <Transition name="fade" mode="out-in">
-                      <p v-if="address.main" class="main-address" :key="'main'">
-                        Основной
-                      </p>
-                      <button
-                        v-else
-                        class="make-main-btn"
-                        @click="makeMainAddress(address.id)"
-                        :key="'button'"
-                      >
-                        Сделать основным
-                      </button>
-                    </Transition>
-                    <PencilIcon
-                      class="edit-icon"
-                      @click="startEditAddress(index)"
+                <p v-else>{{ address.place }}</p>
+                <Transition name="fade" mode="out-in">
+                  <p
+                    v-if="
+                      addressErrors[address.id]?.address ||
+                      addressStatusMessages[address.id]
+                    "
+                    class="status-text"
+                    :class="
+                      addressErrors[address.id]?.address
+                        ? 'error'
+                        : addressStatusClasses[address.id]
+                    "
+                  >
+                    {{
+                      addressErrors[address.id]?.address ||
+                      addressStatusMessages[address.id]
+                    }}
+                  </p>
+                </Transition>
+              </div>
+            </div>
+          </TransitionGroup>
+
+          <!-- New Address Form -->
+          <Transition name="slide">
+            <div v-if="showAddAddress" class="personal-details">
+              <div
+                class="personal-details-container"
+                :class="{
+                  'success-flash': addressStatuses['new'] === 'success',
+                  'error-flash': addressStatuses['new'] === 'error',
+                  pending: addressStatuses['new'] === 'pending',
+                }"
+              >
+                <div class="field-header">
+                  <h3>Новый адрес</h3>
+                  <div class="edit-controls">
+                    <CheckIcon
+                      class="edit-icon submit-icon"
+                      @click="addAddress(newAddress)"
                     />
-                    <TrashIcon
-                      v-if="addresses.length > 1"
-                      class="edit-icon delete-icon"
-                      @click="deleteAddress(index)"
+                    <XMarkIcon
+                      class="edit-icon cancel-icon"
+                      @click="cancelAddAddress"
                     />
                   </div>
-                </template>
+                </div>
+                <input
+                  type="text"
+                  placeholder="г. Экибазтуз, ул. Введения Адреса, д. 1, кв. 15"
+                  v-model="newAddress"
+                  v-bind="addressAttrs"
+                />
+                <Transition name="fade">
+                  <p
+                    v-if="newAddressErrors.address || newAddressStatusMessage"
+                    class="status-text"
+                    :class="
+                      newAddressErrors.address ? 'error' : newAddressStatusClass
+                    "
+                  >
+                    {{ newAddressErrors.address || newAddressStatusMessage }}
+                  </p>
+                </Transition>
               </div>
             </div>
-            <template v-if="editingIndex === index">
-              <input
-                type="text"
-                placeholder="г. Экибазтуз, ул. Введения Адреса, д. 1, кв. 15"
-                v-model="editedAddress"
-              />
-            </template>
-            <p v-else>{{ address.place }}</p>
-            <Transition name="fade" mode="out-in">
-              <p
-                v-if="
-                  addressErrors[address.id]?.address ||
-                  addressStatusMessages[address.id]
-                "
-                class="status-text"
-                :class="
-                  addressErrors[address.id]?.address
-                    ? 'error'
-                    : addressStatusClasses[address.id]
-                "
-              >
-                {{
-                  addressErrors[address.id]?.address ||
-                  addressStatusMessages[address.id]
-                }}
-              </p>
-            </Transition>
-          </div>
+          </Transition>
         </div>
-      </TransitionGroup>
-
-      <!-- New Address Form -->
-      <Transition name="slide">
-        <div v-if="showAddAddress" class="personal-details">
-          <div
-            class="personal-details-container"
-            :class="{
-              'success-flash': addressStatuses['new'] === 'success',
-              'error-flash': addressStatuses['new'] === 'error',
-              pending: addressStatuses['new'] === 'pending',
-            }"
-          >
-            <div class="field-header">
-              <h3>Новый адрес</h3>
-              <div class="edit-controls">
-                <CheckIcon
-                  class="edit-icon submit-icon"
-                  @click="addAddress(newAddress)"
-                />
-                <XMarkIcon
-                  class="edit-icon cancel-icon"
-                  @click="cancelAddAddress"
-                />
-              </div>
-            </div>
-            <input
-              type="text"
-              placeholder="г. Экибазтуз, ул. Введения Адреса, д. 1, кв. 15"
-              v-model="newAddress"
-              v-bind="addressAttrs"
-            />
-            <Transition name="fade">
-              <p
-                v-if="newAddressErrors.address || newAddressStatusMessage"
-                class="status-text"
-                :class="
-                  newAddressErrors.address ? 'error' : newAddressStatusClass
-                "
-              >
-                {{ newAddressErrors.address || newAddressStatusMessage }}
-              </p>
-            </Transition>
-          </div>
-        </div>
-      </Transition>
-    </div>
+      </template>
+      <template #fallback>
+        <div></div>
+      </template>
+    </Suspense>
   </div>
 </template>
 

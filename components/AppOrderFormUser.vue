@@ -10,25 +10,23 @@ const inputsDisabled = computed(() => (props.successMessage ? true : false));
 
 const { user: userInfo } = useUsers();
 
-if (userInfo.value && userInfo.value?.addresses) {
-  const emit = defineEmits(["submit"]);
+const emit = defineEmits(["submit"]);
 
-  const getMainAddressIndex = (addresses: Array<Address>) => {
-    return addresses.findIndex((addr) => addr.main);
-  };
+const getMainAddressIndex = (addresses: Array<Address>) => {
+  return addresses.findIndex((addr) => addr.main);
+};
 
-  const mainAddressIndex = computed(
-    () => getMainAddressIndex(userInfo.value!.addresses!) ?? 0
-  );
+const mainAddressIndex = computed(
+  () => getMainAddressIndex(userInfo.value!.addresses!) ?? 0
+);
 
-  function handleSubmit() {
-    emit("submit", {
-      name: userInfo.value?.name,
-      phone: userInfo.value?.phone,
-      address: userInfo.value!.addresses![mainAddressIndex.value]?.place,
-      payMethod: userInfo.value?.payMethod || "card-online",
-    });
-  }
+function handleSubmit() {
+  emit("submit", {
+    name: userInfo.value?.name,
+    phone: userInfo.value?.phone,
+    address: userInfo.value!.addresses![mainAddressIndex.value]?.place,
+    payMethod: userInfo.value?.payMethod || "card-online",
+  });
 }
 </script>
 
@@ -52,7 +50,8 @@ if (userInfo.value && userInfo.value?.addresses) {
             <p class="field-name">Адрес</p>
             <p class="value-text">
               {{
-                userInfo.addresses[mainAddressIndex]?.place || "Адрес не указан"
+                userInfo.addresses![mainAddressIndex]?.place ??
+                "Адрес не указан"
               }}
             </p>
           </div>

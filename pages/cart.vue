@@ -4,24 +4,33 @@ const { cartSum, cart } = useItems();
 
 <template>
   <section>
-    <h1>Корзина</h1>
-    <p v-if="cart.length === 0" class="empty-text">В корзине пусто :(</p>
-    <div class="cart-items" v-if="cart.length !== 0">
-      <AppCartItem
-        v-for="item in cart"
-        :key="item.heading"
-        :item="item"
-        @updateItemAmount="
-          (amount) => {
-            item.amount = amount;
-          }
-        "
-      />
-    </div>
-    <p class="sum" v-if="cart.length !== 0">{{ `Итого: ${cartSum} тг.` }}</p>
-    <NuxtLink class="link-button" to="/order" v-if="cart.length !== 0"
-      ><span>Перейти к оформлению заказа</span></NuxtLink
-    >
+    <Suspense>
+      <template #default>
+        <h1>Корзина</h1>
+        <p v-if="cart.length === 0" class="empty-text">В корзине пусто :(</p>
+        <div class="cart-items" v-if="cart.length !== 0">
+          <AppCartItem
+            v-for="item in cart"
+            :key="item.heading"
+            :item="item"
+            @updateItemAmount="
+              (amount) => {
+                item.amount = amount;
+              }
+            "
+          />
+        </div>
+        <p class="sum" v-if="cart.length !== 0">
+          {{ `Итого: ${cartSum} тг.` }}
+        </p>
+        <NuxtLink class="link-button" to="/order" v-if="cart.length !== 0"
+          ><span>Перейти к оформлению заказа</span></NuxtLink
+        >
+      </template>
+      <template #fallback>
+        <div></div>
+      </template>
+    </Suspense>
   </section>
 </template>
 

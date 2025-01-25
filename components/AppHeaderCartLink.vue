@@ -18,18 +18,22 @@ const emit = defineEmits(["buttonClick"]);
 </script>
 
 <template>
-  <button
-    @click="
-      () => {
-        emit('buttonClick');
-        navigateTo('/cart');
-      }
-    "
-    :class="`link ${selected ? 'active' : ''}`"
-  >
-    <img src="/img/cart.svg" alt="Cart icon" />
-    <div v-if="cartItemsCount > 0" class="cart-badge">{{ cartItemsCount }}</div>
-  </button>
+  <div>
+    <button
+      @click="
+        () => {
+          emit('buttonClick');
+          navigateTo('/cart');
+        }
+      "
+      :class="`link ${selected ? 'active' : ''}`"
+    >
+      <img src="/img/cart.svg" alt="Cart icon" />
+      <div v-if="cartItemsCount > 0" class="cart-badge">
+        {{ cartItemsCount }}
+      </div>
+    </button>
+  </div>
 </template>
 
 <style scoped lang="scss">

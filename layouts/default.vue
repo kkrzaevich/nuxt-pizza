@@ -1,63 +1,97 @@
 <script setup lang="ts">
-const { user, isLoggedIn } = useUsers();
+const displayOverlayFlag = ref(false);
+
+const { overlayVisible } = useDisplayOverlay();
+
+watch(overlayVisible, () => {
+  displayOverlayFlag.value = overlayVisible.value;
+});
 </script>
 
 <template>
-  <div class="header">
+  <section>
     <Transition name="fade">
-      <div v-if="isLoggedIn" class="greeting">
-        Добро пожаловать, <span>{{ user?.name }}</span>
+      <div v-if="displayOverlayFlag" class="overlay">
+        <AppOverlay />
       </div>
     </Transition>
-    <AppHeaderLogo />
-    <AppHeaderNavbar />
-  </div>
-  <slot />
+    <div :class="`page ${displayOverlayFlag ? 'disabled' : ''}`">
+      <AppHeader />
+      <slot />
+      <AppFooter />
+    </div>
+    <AppFloatingCartButton />
+  </section>
 </template>
 
 <style scoped lang="scss">
 @use "../assets/styles" as *;
 
-.header {
-  display: grid;
-  grid-auto-flow: column;
-  justify-content: space-between;
+.disabled {
+  height: 100%;
+  overflow-y: hidden;
+  filter: blur(3px);
+}
+
+.overlay {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+}
+
+.page {
+  display: flex;
+  min-width: 460px;
+  flex-direction: column;
   align-items: center;
-  align-content: space-between;
-  align-self: stretch;
-  flex-wrap: wrap;
-  width: 100%;
-  position: relative;
-}
-
-.greeting {
-  position: absolute;
-  @include small-light($mobile: false);
-  color: $outline-clr;
-  top: -3rem;
-  right: 5px;
-
-  span {
-    @include small($mobile: false);
-  }
-}
-
-@media screen and (max-width: $break-tablet) {
-  .greeting {
-    display: none;
-  }
-}
-
-@media screen and (max-width: $break-mobile) {
+  gap: 70px;
+  flex: 1 0 0;
+  transition: filter 0.3s;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: all 0.3s;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.fly-fade-enter-active {
+  transition: all 0.3s;
+}
+
+.fly-fade-leave-active {
+  transition: all 0.3s;
+}
+
+.fly-fade-enter-from {
+  transform: translateX(120px);
+  opacity: 0;
+}
+
+.fly-fade-leave-to {
+  opacity: 0;
+}
+
+@media screen and (max-width: $break-tablet) {
+  .overlay {
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: none;
+  }
+}
+
+@media screen and (max-width: $break-mobile) {
+  .page {
+    min-width: 320px;
+    gap: 45px;
+  }
 }
 </style>

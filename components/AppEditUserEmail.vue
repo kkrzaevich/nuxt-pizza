@@ -75,49 +75,64 @@ const onEmailSubmit = handleSubmit.withControlled(async (values) => {
 </script>
 
 <template>
-  <div class="personal-data">
-    <form
-      class="personal-details"
-      @submit.prevent="onEmailSubmit"
-      :class="{
-        'success-flash': emailStatus === 'success',
-        'error-flash': emailStatus === 'error',
-      }"
-    >
-      <div class="field-header">
-        <h2>Email</h2>
-        <div class="edit-controls">
-          <PencilIcon
-            v-if="!emailEdit"
-            class="edit-icon"
-            @click="emailEdit = true"
-          />
-          <template v-else>
-            <CheckIcon class="edit-icon submit-icon" @click="onEmailSubmit" />
-            <XMarkIcon class="edit-icon cancel-icon" @click="cancelEmailEdit" />
-          </template>
-        </div>
-      </div>
-      <input
-        v-if="emailEdit"
-        type="text"
-        placeholder="alihan@mail.kz"
-        name="email"
-        v-model="email"
-        v-bind="emailAttrs"
-      />
-      <p v-else class="value-text">{{ currentData?.email || "Не указано" }}</p>
-      <Transition name="fade">
-        <p
-          v-if="emailErrors.email || emailStatusMessage"
-          class="status-text"
-          :class="emailErrors.email ? 'error' : emailStatusClass"
+  <Suspense>
+    <template #default>
+      <div class="personal-data">
+        <form
+          class="personal-details"
+          @submit.prevent="onEmailSubmit"
+          :class="{
+            'success-flash': emailStatus === 'success',
+            'error-flash': emailStatus === 'error',
+          }"
         >
-          {{ emailErrors.email || emailStatusMessage }}
-        </p>
-      </Transition>
-    </form>
-  </div>
+          <div class="field-header">
+            <h2>Email</h2>
+            <div class="edit-controls">
+              <PencilIcon
+                v-if="!emailEdit"
+                class="edit-icon"
+                @click="emailEdit = true"
+              />
+              <template v-else>
+                <CheckIcon
+                  class="edit-icon submit-icon"
+                  @click="onEmailSubmit"
+                />
+                <XMarkIcon
+                  class="edit-icon cancel-icon"
+                  @click="cancelEmailEdit"
+                />
+              </template>
+            </div>
+          </div>
+          <input
+            v-if="emailEdit"
+            type="text"
+            placeholder="alihan@mail.kz"
+            name="email"
+            v-model="email"
+            v-bind="emailAttrs"
+          />
+          <p v-else class="value-text">
+            {{ currentData?.email || "Не указано" }}
+          </p>
+          <Transition name="fade">
+            <p
+              v-if="emailErrors.email || emailStatusMessage"
+              class="status-text"
+              :class="emailErrors.email ? 'error' : emailStatusClass"
+            >
+              {{ emailErrors.email || emailStatusMessage }}
+            </p>
+          </Transition>
+        </form>
+      </div>
+    </template>
+    <template #fallback>
+      <div></div>
+    </template>
+  </Suspense>
 </template>
 
 <style scoped lang="scss">

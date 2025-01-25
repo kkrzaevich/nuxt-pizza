@@ -31,17 +31,19 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <button
-    :class="`link ${selected ? 'selected' : ''}`"
-    @click="
-      () => {
-        emit('buttonClick');
-        navigateTo(page.link);
-      }
-    "
-  >
-    {{ page.name }}
-  </button>
+  <div>
+    <button
+      :class="`link ${selected ? 'selected' : ''}`"
+      @click="
+        () => {
+          emit('buttonClick');
+          navigateTo(page.link);
+        }
+      "
+    >
+      {{ page.name }}
+    </button>
+  </div>
 </template>
 
 <style scoped lang="scss">
