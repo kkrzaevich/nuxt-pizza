@@ -3,18 +3,14 @@ import type { Page } from "@/types/types";
 
 const emit = defineEmits(["buttonClick"]);
 
-const route = useRoute();
-const selected = ref(false);
+// const route = useRoute();
+// const selected = ref(false);
 
-const routeName = computed(() => route.name);
+// console.log("route", route);
 
-watch(routeName, () => {
-  if (routeName.value === props.page.link) {
-    selected.value = true;
-  } else {
-    selected.value = false;
-  }
-});
+// watch(route.params, () => {
+//   selected.value = route.name === props.page.link;
+// });
 
 export interface Props {
   page: Page;
@@ -32,17 +28,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <div>
-    <button
-      :class="`link ${selected ? 'selected' : ''}`"
-      @click="
-        () => {
-          emit('buttonClick');
-          navigateTo(page.link);
-        }
-      "
+    <NuxtLink
+      :to="`/${page.link}`"
+      class="link"
+      active-class="selected"
+      @click="emit('buttonClick')"
     >
       {{ page.name }}
-    </button>
+    </NuxtLink>
   </div>
 </template>
 

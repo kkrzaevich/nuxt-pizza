@@ -27,6 +27,7 @@ export const useItems = () => {
     };
     return selectedItem;
   });
+
   const cart = useState("cart", () => {
     const cart = useLocalStorage("cart", [] as CartItem[]);
     return cart;

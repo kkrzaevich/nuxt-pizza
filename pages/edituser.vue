@@ -18,6 +18,20 @@ const logout = async () => {
     await navigateTo("/login");
   }
 };
+
+useSeoMeta({
+  title: "Личный кабинет - Пиццерия в Экибазтузе",
+  description:
+    "Управление личным кабинетом, редактирование профиля и просмотр заказов.",
+  ogTitle: "Личный кабинет - Пиццерия",
+  ogDescription: "Управление профилем и заказами в пиццерии.",
+  robots: "noindex, nofollow", // Protect private user data from search engines
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: "auth",
+});
 </script>
 
 <template>

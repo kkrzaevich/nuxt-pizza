@@ -1,3 +1,13 @@
+<script setup lang="ts">
+useSeoMeta({
+  title: "Мы работаем над этим :(",
+  description: "Мы работаем над этим :(",
+  ogTitle: "Мы работаем над этим :(",
+  ogDescription: "Мы работаем над этим :(",
+  ogImage: "/logo.png",
+});
+</script>
+
 <template>
   <section>
     <h1>Мы работаем над этим :(</h1>

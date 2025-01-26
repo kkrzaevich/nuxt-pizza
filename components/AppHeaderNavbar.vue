@@ -95,6 +95,7 @@ img {
   justify-content: center;
   align-items: flex-start;
   gap: 32px;
+  cursor: pointer;
 }
 
 section {

@@ -1,11 +1,19 @@
 <script setup lang="ts">
 const { cartSum, cart } = useItems();
+
+useSeoMeta({
+  title: "Корзина - Пиццерия в Экибазтузе",
+  description:
+    "Оформите заказ пиццы онлайн. Просмотрите выбранные товары и оформите доставку.",
+  ogTitle: "Корзина заказа - Пиццерия в Экибазтузе",
+  ogDescription: "Оформите заказ пиццы с доставкой в Экибазтузе.",
+});
 </script>
 
 <template>
-  <section>
-    <Suspense>
-      <template #default>
+  <Suspense>
+    <template #default>
+      <section>
         <h1>Корзина</h1>
         <p v-if="cart.length === 0" class="empty-text">В корзине пусто :(</p>
         <div class="cart-items" v-if="cart.length !== 0">
@@ -26,12 +34,12 @@ const { cartSum, cart } = useItems();
         <NuxtLink class="link-button" to="/order" v-if="cart.length !== 0"
           ><span>Перейти к оформлению заказа</span></NuxtLink
         >
-      </template>
-      <template #fallback>
-        <div></div>
-      </template>
-    </Suspense>
-  </section>
+      </section>
+    </template>
+    <template #fallback>
+      <div></div>
+    </template>
+  </Suspense>
 </template>
 
 <style scoped lang="scss">

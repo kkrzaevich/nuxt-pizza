@@ -5,6 +5,19 @@ import * as yup from "yup";
 
 const router = useRouter();
 
+useSeoMeta({
+  title: "Регистрация",
+  description: "Регистрация",
+  ogTitle: "Регистрация",
+  ogDescription: "Регистрация",
+  ogImage: "/logo.png",
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: "auth",
+});
+
 import type { userCredentials, UserData } from "@/types/types";
 const { width: outerWidth } = useWindowSize();
 const { handleSignup } = useHandleSignup();

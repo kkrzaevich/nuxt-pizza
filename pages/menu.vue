@@ -1,3 +1,12 @@
+<script setup>
+useSeoMeta({
+  title: "Меню - Пиццерия в Экибазтузе",
+  description: "Меню пиццерии в Экибазтузе.",
+  ogTitle: "Меню - Пиццерия",
+  ogDescription: "Меню пиццерии в Экибазтузе.",
+});
+</script>
+
 <template>
   <div class="menu">
     <AppMenuChoose />

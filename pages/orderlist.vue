@@ -16,6 +16,19 @@ const openDetails = async (id: number) => {
   await navigateTo(`/order/${id}`);
 };
 
+useSeoMeta({
+  title: "Мои заказы",
+  description: "Мои заказы",
+  ogTitle: "Мои заказы",
+  ogDescription: "Мои заказы",
+  ogImage: "/logo.png",
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: "auth",
+});
+
 onMounted(async () => {
   loading.value = true;
   if (!uuid.value) {

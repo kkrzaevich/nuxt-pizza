@@ -8,6 +8,14 @@ const errorMessage = ref("");
 const successMessage = ref("");
 const isLoading = ref(false);
 
+useSeoMeta({
+  title: "Оформление заказа",
+  description: "Оформление заказа",
+  ogTitle: "Оформление заказа",
+  ogDescription: "Оформление заказа",
+  ogImage: "/logo.png",
+});
+
 const handleSubmit = async (values: Order) => {
   isLoading.value = true;
   const cartContents = cart.value.map((item) => ({

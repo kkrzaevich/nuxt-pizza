@@ -6,6 +6,19 @@ import { useRouter } from "vue-router";
 import * as yup from "yup";
 
 import type { UserData } from "@/types/types";
+
+useSeoMeta({
+  title: "Вход - Пиццерия в Экибазтузе",
+  description: "Вход в личный кабинет пиццерии в Экибазтузе.",
+  ogTitle: "Вход в личный кабинет - Пиццерия",
+  ogDescription: "Вход в личный кабинет пиццерии в Экибазтузе.",
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: "auth",
+});
+
 const { width: outerWidth } = useWindowSize();
 
 const maxlength = ref(12);

@@ -26,6 +26,17 @@
   </section>
 </template>
 
+<script setup>
+useSeoMeta({
+  title: "Контакты - Пиццерия в Экибазтузе",
+  description:
+    "Свяжитесь с нами: адрес, телефон и часы работы пиццерии в Экибазтузе.",
+  ogTitle: "Контакты пиццерии в Экибазтузе",
+  ogDescription:
+    "Наш адрес: ул. Ауезова, 49Б. Часы работы и контактная информация.",
+});
+</script>
+
 <style scoped lang="scss">
 @use "../assets/styles" as *;
 
