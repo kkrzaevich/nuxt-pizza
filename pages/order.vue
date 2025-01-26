@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Order } from "@/types/types";
 
-const { cartSum, cart } = useItems();
+const { cartSum } = useItemsStore();
+const { cart } = storeToRefs(useItemsStore());
 const { isLoggedIn, user } = useUsers();
 const { createOrder } = useOrders();
 const errorMessage = ref("");
@@ -26,7 +27,7 @@ const handleSubmit = async (values: Order) => {
   const order: Order = {
     ...values,
     contents: cartContents,
-    totalPrice: cartSum.value,
+    totalPrice: cartSum,
     status: "cooking",
     uuid: user.value?.id ?? "",
   };

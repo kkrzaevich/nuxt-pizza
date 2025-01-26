@@ -10,7 +10,7 @@ export const useOrders = () => {
 
   const supabase = useSupabaseClient();
 
-  const { cart } = useItems();
+  const { cart } = storeToRefs(useItemsStore());
 
   const fetchOrders = async (uuid: string) => {
     loadingOrders.value = true;

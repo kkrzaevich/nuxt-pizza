@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { pizzaItems, drinkItems, snackItems, loadingItems } = useItems();
+const { pizzaItems, drinkItems, snackItems, loadingItems } = useItemsStore();
 </script>
 
 <template>

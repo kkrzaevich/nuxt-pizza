@@ -4,8 +4,9 @@ const {
   incrementSelectedItemAmount,
   decrementSelectedItemAmount,
   addItemToCart,
-} = useItems();
-const { overlayVisible } = useDisplayOverlay();
+} = useItemsStore();
+
+const { overlayVisible } = storeToRefs(useDisplayOverlayStore());
 
 function addToCart() {
   addItemToCart();

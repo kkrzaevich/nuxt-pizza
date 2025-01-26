@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { type MenuItem } from "@/types/types";
+import { useDisplayOverlayStore } from "@/stores/displayOverlay";
 
-const { overlayVisible } = useDisplayOverlay();
-const { selectedItem } = useItems();
+const { overlayVisible } = storeToRefs(useDisplayOverlayStore());
+
+const { selectedItem } = storeToRefs(useItemsStore());
 
 const props = withDefaults(defineProps<MenuItem>(), {
   heading: "Маргарита",

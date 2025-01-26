@@ -2,7 +2,11 @@
 const route = useRoute();
 const selected = ref(false);
 
-const { cartItemsCount } = useItems();
+const { cart } = storeToRefs(useItemsStore());
+
+const cartItemsCount = computed(() => {
+  return cart.value.reduce((count, item) => count + (item.amount ?? 0), 0);
+});
 
 const routeName = computed(() => route.name);
 

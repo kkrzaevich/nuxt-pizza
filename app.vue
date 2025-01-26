@@ -2,8 +2,7 @@
 import { onMounted } from "vue";
 
 const { getUser } = useGetUser();
-const { fetchItems } = useItems();
-
+const { fetchItems } = useItemsStore();
 onMounted(async () => {
   await getUser();
   await fetchItems();

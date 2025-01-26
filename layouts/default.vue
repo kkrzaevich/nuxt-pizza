@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const displayOverlayFlag = ref(false);
 
-const { overlayVisible } = useDisplayOverlay();
+import { useDisplayOverlayStore } from "@/stores/displayOverlay";
+
+const { overlayVisible } = storeToRefs(useDisplayOverlayStore());
 
 watch(overlayVisible, () => {
   displayOverlayFlag.value = overlayVisible.value;

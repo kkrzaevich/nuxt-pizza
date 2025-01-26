@@ -7,6 +7,8 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxt/fonts",
     "vuetify-nuxt-module",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
   ],
   router: {
     options: {

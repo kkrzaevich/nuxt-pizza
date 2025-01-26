@@ -7,7 +7,7 @@ const {
   incrementItemAmountInCart,
   decrementItemAmountInCart,
   deleteItemFromCart,
-} = useItems();
+} = useItemsStore();
 
 const emit = defineEmits(["updateItemAmount"]);
 
