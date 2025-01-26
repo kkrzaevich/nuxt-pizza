@@ -7,7 +7,7 @@ import { XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 
 const emailEdit = ref(false);
 const { editUserEmail } = useEditUser();
-const { user: currentData } = useUsers();
+const { user: currentData } = storeToRefs(useUserStore());
 
 const emailSchema = yup.object({
   email: yup

@@ -13,13 +13,13 @@ import {
 import type { StatusClass } from "@/types/types";
 import { useEditAddresses } from "@/composables/useEditAddresses";
 
-const { user } = useUsers();
+const { user } = useUserStore();
 const { addUserAddress, editUserAddress, deleteUserAddress, setMainAddress } =
   useEditAddresses();
 
 const showAddAddress = ref(false);
 const newAddress = ref("");
-const addresses = ref(user.value?.addresses || []);
+const addresses = ref(user?.addresses || []);
 const editingIndex = ref<number | null>(null);
 const editedAddress = ref("");
 const addressStatuses = ref<{
@@ -82,7 +82,7 @@ async function addAddress(place: any) {
     const success = await addUserAddress(place);
 
     if (success) {
-      const newAddresses = user.value?.addresses ?? [];
+      const newAddresses = user?.addresses ?? [];
       const newAddressId = newAddresses[newAddresses.length - 1].id;
       addressStatuses.value[newAddressId] = "success";
       newAddressStatusClass.value = "success";
@@ -140,7 +140,7 @@ async function saveEditedAddress(index: number) {
       setTimeout(() => {
         addressStatuses.value[addressToEdit.id] = null;
       }, 300);
-      addresses.value = user.value?.addresses ?? [];
+      addresses.value = user?.addresses ?? [];
       editingIndex.value = null;
       editedAddress.value = "";
     }
@@ -162,7 +162,7 @@ async function deleteAddress(index: number) {
     const success = await deleteUserAddress(addressToDelete.id);
 
     if (success) {
-      addresses.value = user.value?.addresses ?? [];
+      addresses.value = user?.addresses ?? [];
     }
   } catch (err) {
     addressStatuses.value[addressToDelete.id] = "error";
@@ -176,7 +176,7 @@ async function makeMainAddress(addressId: number) {
   try {
     addressStatuses.value[addressId] = "pending";
     await setMainAddress(addressId);
-    addresses.value = user.value?.addresses ?? [];
+    addresses.value = user?.addresses ?? [];
     addressStatuses.value[addressId] = "success";
     setTimeout(() => {
       addressStatuses.value[addressId] = null;

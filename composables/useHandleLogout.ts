@@ -1,7 +1,7 @@
 export const useHandleLogout = () => {
   const loading = ref(false);
   const supabase = useSupabaseClient();
-  const { user } = useUsers();
+  const { user } = storeToRefs(useUserStore());
 
   const handleLogout = async () => {
     try {

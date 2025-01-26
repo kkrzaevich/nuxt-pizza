@@ -3,8 +3,9 @@ import type { Order } from "@/types/types";
 
 const { cartSum } = useItemsStore();
 const { cart } = storeToRefs(useItemsStore());
-const { isLoggedIn, user } = useUsers();
-const { createOrder } = useOrders();
+const { isLoggedIn } = useUserStore();
+const { user } = storeToRefs(useUserStore());
+const { createOrder } = useOrderStore();
 const errorMessage = ref("");
 const successMessage = ref("");
 const isLoading = ref(false);

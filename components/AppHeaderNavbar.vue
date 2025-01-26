@@ -3,10 +3,10 @@ const { width: outerWidth } = useWindowSize();
 
 const hamburgerClicked = ref(false);
 
-const { user } = useUsers();
+const { user } = useUserStore();
 
 const pages = computed(() => {
-  if (user.value && user.value.name) {
+  if (user && user.name) {
     return [
       [
         { name: "Меню", link: "menu" },

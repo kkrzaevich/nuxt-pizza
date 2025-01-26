@@ -3,7 +3,7 @@ import type { PayMethod } from "~/types/types";
 export const useEditUser = () => {
   const loading = ref(false);
   const supabase = useSupabaseClient();
-  const { user } = useUsers();
+  const { user } = storeToRefs(useUserStore());
 
   const editUserName = async (name: string) => {
     try {

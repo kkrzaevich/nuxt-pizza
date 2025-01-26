@@ -1,7 +1,7 @@
 import type { userCredentials } from "~/types/types";
 
 export const useHandleSignup = () => {
-  const { user } = useUsers();
+  const { user } = storeToRefs(useUserStore());
   const { makeAddressMain } = useEditAddresses();
   const loading = ref(false);
   const supabase = useSupabaseClient();

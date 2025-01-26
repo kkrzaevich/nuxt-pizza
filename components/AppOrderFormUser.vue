@@ -8,7 +8,7 @@ const props = defineProps<{
 
 const inputsDisabled = computed(() => (props.successMessage ? true : false));
 
-const { user: userInfo } = useUsers();
+const { user: userInfo } = storeToRefs(useUserStore());
 
 const emit = defineEmits(["submit"]);
 

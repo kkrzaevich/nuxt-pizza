@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user, isLoggedIn } = useUsers();
+const { user, isLoggedIn } = useUserStore();
 </script>
 
 <template>

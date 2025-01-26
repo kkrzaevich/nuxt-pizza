@@ -3,7 +3,7 @@ import type { Address } from "~/types/types";
 export const useEditAddresses = () => {
   const loading = ref(false);
   const supabase = useSupabaseClient();
-  const { user } = useUsers();
+  const { user } = storeToRefs(useUserStore());
 
   const editUserAddresses = async (addresses: Address[]) => {
     try {

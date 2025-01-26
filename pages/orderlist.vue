@@ -1,12 +1,12 @@
 <script setup lang="ts">
-const { user } = useUsers();
-const { orders, fetchOrders } = useOrders();
+const { user } = storeToRefs(useUserStore());
+const { orders, fetchOrders } = useOrderStore();
 const loading = ref(true);
 const errorMessage = ref("");
 
 const uuid = computed(() => user.value?.id);
 
-const showDetails = ref(orders.value.map((order: any) => false));
+const showDetails = ref(orders.map((order: any) => false));
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();

@@ -13,7 +13,7 @@ const payMethodEdit = ref(false);
 
 const { editUserName, editUserPhone, editUserPayMethod } = useEditUser();
 
-const currentData = { ...useUsers().user };
+const { user: currentData } = storeToRefs(useUserStore());
 
 // Name form
 const nameSchema = yup.object({

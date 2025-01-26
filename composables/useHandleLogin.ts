@@ -3,7 +3,7 @@ import type { PayMethod } from "~/types/types";
 export const useHandleLogin = () => {
   const loading = ref(false);
   const supabase = useSupabaseClient();
-  const { user } = useUsers();
+  const { user } = storeToRefs(useUserStore());
   const { makeAddressMain } = useEditAddresses();
 
   const handleLogin = async (userCred: { email: string; password: string }) => {
