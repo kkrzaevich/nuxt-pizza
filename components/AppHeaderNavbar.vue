@@ -3,10 +3,10 @@ const { width: outerWidth } = useWindowSize();
 
 const hamburgerClicked = ref(false);
 
-const { user } = useUserStore();
+const { isLoggedIn } = useUserStore();
 
 const pages = computed(() => {
-  if (user && user.name) {
+  if (isLoggedIn) {
     return [
       [
         { name: "Меню", link: "menu" },
@@ -29,6 +29,7 @@ const pages = computed(() => {
 
 <template>
   <section v-if="outerWidth >= 1134" class="">
+    {{ isLoggedIn }}
     <div class="links">
       <AppHeaderNavbarItem
         v-for="pageDetails in pages[0]"

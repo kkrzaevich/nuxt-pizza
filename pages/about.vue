@@ -39,8 +39,8 @@
       </p>
     </div>
     <div class="images">
-      <img src="../../img/about1.jpg" alt="some photo of trattoria" />
-      <img src="../../img/about2.jpg" alt="some photo of trattoria" />
+      <img src="../public/img/about1.jpg" alt="some photo of trattoria" />
+      <img src="../public/img/about2.jpg" alt="some photo of trattoria" />
     </div>
   </section>
 </template>

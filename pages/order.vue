@@ -54,6 +54,7 @@ const handleSubmit = async (values: Order) => {
 <template>
   <section>
     <h1>Оформление заказа</h1>
+    {{ isLoggedIn }}
     <div class="main-content" v-if="cart.length > 0">
       <div class="main-cost-mobile">
         <h2>Заказ</h2>

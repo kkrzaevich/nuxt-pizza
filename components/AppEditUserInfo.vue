@@ -372,7 +372,7 @@ function cancelPayMethodEdit() {
                   value="card-on-delivery"
                   v-model="payMethod"
                   v-bind="payMethodAttrs"
-                  :disabled="!payMethodEdit"
+                  disabled
                   class="pay-button"
                 />
                 <label for="card-on-delivery" class="pay-label"
@@ -438,6 +438,11 @@ section {
   width: 100%;
   flex-direction: column;
   gap: 7px;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 h1 {

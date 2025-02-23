@@ -67,7 +67,7 @@ function handleSubmit() {
 
       <div class="pay-information">
         <h2>Способ оплаты</h2>
-        <div class="pay-radio">
+        <div class="pay-radio disabled">
           <input
             type="radio"
             class="pay-button"
@@ -75,7 +75,7 @@ function handleSubmit() {
             name="pay"
             value="card-online"
             v-model="userInfo.payMethod"
-            :disabled="inputsDisabled"
+            disabled
           />
           <label class="pay-label" for="payChoice1">Картой онлайн</label>
         </div>
@@ -123,6 +123,11 @@ function handleSubmit() {
 
 <style scoped lang="scss">
 @use "../assets/styles" as *;
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 .order-form {
   display: flex;

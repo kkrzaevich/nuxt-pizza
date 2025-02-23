@@ -11,7 +11,7 @@ useSeoMeta({
 <template>
   <section>
     <h1>Мы работаем над этим :(</h1>
-    <img src="../../img/workInProgress.PNG" alt="sad dog" />
+    <img src="../public/img/workInProgress.png" alt="sad dog" />
   </section>
 </template>
 

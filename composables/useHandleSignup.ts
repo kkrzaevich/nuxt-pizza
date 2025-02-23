@@ -72,7 +72,7 @@ export const useHandleSignup = () => {
       const { error: userdataError } = await supabase.from("userdata").insert({
         uuid: userId,
         phone: phone,
-        paymethod: "card-online",
+        paymethod: "card-on-delivery",
       });
 
       if (userdataError) {
