@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { Order } from "@/types/types";
 
-const { cartSum } = useItemsStore();
+const cartSum = computed(() => useItemsStore().cartSum);
 const { cart } = storeToRefs(useItemsStore());
-const { isLoggedIn } = useUserStore();
+const isLoggedIn = computed(() => useUserStore().isLoggedIn);
 const { user } = storeToRefs(useUserStore());
 const { createOrder } = useOrderStore();
 const errorMessage = ref("");
 const successMessage = ref("");
 const isLoading = ref(false);
+
+const orderDialogOpen = ref(false);
+const orderDialogContents = ref("");
 
 useSeoMeta({
   title: "Оформление заказа",
@@ -28,7 +31,7 @@ const handleSubmit = async (values: Order) => {
   const order: Order = {
     ...values,
     contents: cartContents,
-    totalPrice: cartSum,
+    totalPrice: cartSum.value,
     status: "cooking",
     uuid: user.value?.id ?? "",
   };
@@ -37,7 +40,12 @@ const handleSubmit = async (values: Order) => {
     if (success) {
       errorMessage.value = "";
       successMessage.value = "Заказ создан!";
+      orderDialogContents.value = "Заказ создан. Время ожидания 30-60 минут.";
+      orderDialogOpen.value = true;
     } else {
+      orderDialogContents.value =
+        "Ошибка создания заказа. Повторите попытку позже";
+      orderDialogOpen.value = true;
       throw new Error("Ошибка создания заказа. Повторите попытку позже");
     }
   } catch (error) {
@@ -54,7 +62,6 @@ const handleSubmit = async (values: Order) => {
 <template>
   <section>
     <h1>Оформление заказа</h1>
-    {{ isLoggedIn }}
     <div class="main-content" v-if="cart.length > 0">
       <div class="main-cost-mobile">
         <h2>Заказ</h2>
@@ -105,6 +112,7 @@ const handleSubmit = async (values: Order) => {
     <div v-else>
       <p>Ваша корзина пуста</p>
     </div>
+    <AppOrderDialog v-model="orderDialogOpen" :contents="orderDialogContents" />
   </section>
 </template>
 

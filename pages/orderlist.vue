@@ -1,12 +1,13 @@
 <script setup lang="ts">
 const { user } = storeToRefs(useUserStore());
-const { orders, fetchOrders } = useOrderStore();
+const { fetchOrders } = useOrderStore();
+const { orders } = storeToRefs(useOrderStore());
 const loading = ref(true);
 const errorMessage = ref("");
 
 const uuid = computed(() => user.value?.id);
 
-const showDetails = ref(orders.map((order: any) => false));
+const showDetails = ref(orders.value.map((order: any) => false));
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
@@ -38,6 +39,7 @@ onMounted(async () => {
   }
   try {
     const success = await fetchOrders(uuid.value);
+
     if (success) {
       errorMessage.value = "";
     } else {
@@ -59,7 +61,6 @@ onMounted(async () => {
 <template>
   <section>
     <h1>Мои заказы</h1>
-
     <div v-if="loading" class="loading">
       <v-progress-circular
         indeterminate

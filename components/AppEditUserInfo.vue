@@ -353,14 +353,12 @@ function cancelPayMethodEdit() {
           </div>
           <Transition name="pay-methods" mode="out-in">
             <div class="pay-methods" v-if="payMethodEdit">
-              <div class="pay-radio">
+              <div class="pay-radio disabled">
                 <input
                   type="radio"
                   id="card-online"
                   value="card-online"
-                  v-model="payMethod"
-                  v-bind="payMethodAttrs"
-                  :disabled="!payMethodEdit"
+                  disabled
                   class="pay-button"
                 />
                 <label for="card-online" class="pay-label">Картой онлайн</label>
@@ -372,7 +370,7 @@ function cancelPayMethodEdit() {
                   value="card-on-delivery"
                   v-model="payMethod"
                   v-bind="payMethodAttrs"
-                  disabled
+                  :disabled="!payMethodEdit"
                   class="pay-button"
                 />
                 <label for="card-on-delivery" class="pay-label"
@@ -431,6 +429,11 @@ section {
   align-items: flex-start;
   gap: 45px;
   align-self: stretch;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .error-container {

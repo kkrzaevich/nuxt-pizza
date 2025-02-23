@@ -97,7 +97,8 @@ export const useHandleLogin = () => {
           name: existingUsername.username,
           email: email,
           phone: existingUser.phone,
-          payMethod: (existingUser.paymethod as PayMethod) ?? "card-online",
+          payMethod:
+            (existingUser.paymethod as PayMethod) ?? "card-on-delivery",
           addresses: addresses,
         };
 

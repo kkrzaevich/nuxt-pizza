@@ -4,16 +4,20 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const guestRoutes = ["/login", "/register"];
 
-  const { isLoggedIn, user } = useUserStore();
+  const { user } = useUserStore();
+
+  const isLoggedIn = computed(() => useUserStore().isLoggedIn);
 
   const { getUser } = useGetUser();
+
+  await getUser();
+
+  console.log("isLoggedIn", isLoggedIn);
 
   // Only redirect if trying to access protected routes while not logged in
   if (protectedRoutes.includes(to.path) && !isLoggedIn) {
     return navigateTo("/login");
   }
-
-  await getUser();
 
   if (guestRoutes.includes(to.path) && isLoggedIn) {
     return navigateTo("/menu");

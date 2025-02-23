@@ -59,7 +59,11 @@ definePageMeta({
       </template>
       <template #fallback>
         <div class="skeleton-loader">
-          <!-- Skeleton UI -->
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            :size="30"
+          ></v-progress-circular>
         </div>
       </template>
     </Suspense>
